@@ -102,3 +102,54 @@ int levenshteinDistance(const string& str1, const string& str2) {
 
     return dp[len1][len2];
 }
+
+int main() {
+    Tree tree;
+
+    // Sample words to insert into the Tree
+    tree.insert("apple");
+    tree.insert("apply");
+    tree.insert("app");
+    tree.insert("banana");
+    tree.insert("band");
+    tree.insert("bandit");
+
+    string prefix;
+    cout << "Enter a word to check or autocomplete: ";
+    cin >> prefix;
+
+    // Array to store suggestions
+    string suggestions[MAX_SUGGESTIONS];
+    int suggestionCount = tree.getSuggestions(prefix, suggestions);
+
+    if (suggestionCount == 0) {
+        cout << "No suggestions found for prefix: " << prefix << endl;
+    } else {
+        cout << "Suggestions: ";
+        for (int i = 0; i < suggestionCount; i++) {
+            cout << suggestions[i] << " ";
+        }
+        cout << endl;
+    }
+
+    // Optionally: Suggest corrections if the word is misspelled
+    string corrections[MAX_SUGGESTIONS];
+    int correctionCount = 0;
+
+    // Use Levenshtein distance to find possible corrections
+    for (int i = 0; i < suggestionCount; i++) {
+        if (levenshteinDistance(prefix, suggestions[i]) <= 2) {
+            corrections[correctionCount++] = suggestions[i];
+        }
+    }
+
+    if (correctionCount > 0) {
+        cout << "Did you mean: ";
+        for (int i = 0; i < correctionCount; i++) {
+            cout << corrections[i] << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
